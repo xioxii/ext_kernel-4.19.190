@@ -1,0 +1,10 @@
+config MTK_HSAPIF_DRIVER
+	bool "Enable Evolved CLDMA Driver as interface for PCIE"
+	default y
+	help
+	  This option enables CLDMA device driver support,
+	  if yes, then PC is using cldma driver,
+	  if no, cldma driver is disabled.
+	  The option default enable.
+
+

@@ -1,0 +1,113 @@
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * Copyright (C) 2019 MediaTek Inc.
+ */
+
+#ifndef __MTK_SIP_SVC_H
+#define __MTK_SIP_SVC_H
+
+/* Error Code */
+#define SIP_SVC_E_SUCCESS               0
+#define SIP_SVC_E_NOT_SUPPORTED         -1
+#define SIP_SVC_E_INVALID_PARAMS        -2
+#define SIP_SVC_E_INVALID_RANGE         -3
+#define SIP_SVC_E_PERMISSION_DENIED     -4
+
+#ifdef CONFIG_ARM64
+#define MTK_SIP_SMC_CONVENTION          ARM_SMCCC_SMC_64
+#else
+#define MTK_SIP_SMC_CONVENTION          ARM_SMCCC_SMC_32
+#endif
+
+#define MTK_SIP_SMC_CMD(fn_id) \
+	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL, MTK_SIP_SMC_CONVENTION, \
+			   ARM_SMCCC_OWNER_SIP, fn_id)
+
+/* 0x82000200 - 0x820003FF & 0xC2000300 - 0xC20003FF */
+/* Debug feature and ATF related */
+#define MTK_SIP_KERNEL_WDT \
+	MTK_SIP_SMC_CMD(0x200)
+#define MTK_SIP_KERNEL_TIME_SYNC \
+	MTK_SIP_SMC_CMD(0x202)
+#define MTK_SIP_KERNEL_ATF_DEBUG \
+	MTK_SIP_SMC_CMD(0x204)
+
+/* CCCI debug feature */
+#define MTK_SIP_KERNEL_CCCI_GET_INFO \
+	MTK_SIP_SMC_CMD(0x206)
+
+/* SCP DVFS */
+#define MTK_SIP_KERNEL_SCP_DVFS_CTRL \
+	MTK_SIP_SMC_CMD(0x232)
+
+/* AMMS related SMC call */
+#define MTK_SIP_KERNEL_AMMS_GET_FREE_ADDR \
+	MTK_SIP_SMC_CMD(0x250)
+#define MTK_SIP_KERNEL_AMMS_GET_FREE_LENGTH \
+	MTK_SIP_SMC_CMD(0x251)
+#define MTK_SIP_KERNEL_AMMS_GET_PENDING \
+	MTK_SIP_SMC_CMD(0x252)
+#define MTK_SIP_KERNEL_AMMS_ACK_PENDING \
+	MTK_SIP_SMC_CMD(0x253)
+#define MTK_SIP_KERNEL_AMMS_MD_POS_ADDR \
+	MTK_SIP_SMC_CMD(0x254)
+#define MTK_SIP_KERNEL_AMMS_MD_POS_LENGTH \
+	MTK_SIP_SMC_CMD(0x255)
+#define MTK_SIP_KERNEL_AMMS_GET_MD_POS_ADDR \
+	MTK_SIP_SMC_CMD(0x256)
+#define MTK_SIP_KERNEL_AMMS_GET_MD_POS_LENGTH \
+	MTK_SIP_SMC_CMD(0x257)
+#define MTK_SIP_KERNEL_AMMS_GET_SEQ_ID \
+	MTK_SIP_SMC_CMD(0x258)
+
+/* Security related SMC call */
+/* TRNG */
+#define MTK_SIP_KERNEL_GET_RND \
+	MTK_SIP_SMC_CMD(0x26A)
+/* DEVAPC */
+#define MTK_SIP_KERNEL_DAPC_PERM_GET \
+	MTK_SIP_SMC_CMD(0x26B)
+#define MTK_SIP_KERNEL_CLR_SRAMROM_VIO \
+	MTK_SIP_SMC_CMD(0x26C)
+#define MTK_SIP_KERNEL_DAPC_DUMP \
+	MTK_SIP_SMC_CMD(0x26D)
+
+/* UFS related SMC call */
+#define MTK_SIP_UFS_CONTROL \
+	MTK_SIP_SMC_CMD(0x276)
+
+/* SCDK related SMC call */
+#define MTK_SIP_KERNEL_MTK_SCDK \
+	MTK_SIP_SMC_CMD(0x3B0)
+
+/* M4U related SMC call */
+#define MTK_M4U_DEBUG_DUMP \
+	MTK_SIP_SMC_CMD(0x3E0)
+
+/* Encrypt/Decrypt data with HW IK and ONLY support 64bit */
+#define MTK_SIP_HW_IK \
+	MTK_SIP_SMC_CMD(0x3EE)
+
+/* Debug related SMC call */
+#define MTK_SIP_KERNEL_CCCI_CONTROL \
+	MTK_SIP_SMC_CMD(0x505)
+/* VCOREFS */
+#define MTK_SIP_VCOREFS_CONTROL \
+	MTK_SIP_SMC_CMD(0x506)
+/* MTK LPM */
+#define MTK_SIP_MTK_LPM_CONTROL \
+	MTK_SIP_SMC_CMD(0x507)
+/* EMIMPU */
+#define MTK_SIP_EMIMPU_CONTROL \
+	MTK_SIP_SMC_CMD(0x50B)
+/* MTK Data Crypto */
+#define MTK_SIP_CRYPTO_CONTROL \
+	MTK_SIP_SMC_CMD(0x510)
+/* AUDIO related SMC call */
+#define MTK_SIP_AUDIO_CONTROL \
+	MTK_SIP_SMC_CMD(0x517)
+
+/* PCIe control related SMC call */
+#define MTK_SIP_PCIE_CONTROL \
+	MTK_SIP_SMC_CMD(0x522)
+#endif

@@ -1,0 +1,83 @@
+config DRM_MEDIATEK
+	tristate "DRM Support for Mediatek SoCs"
+	depends on DRM
+	depends on ARCH_MEDIATEK || (ARM && COMPILE_TEST)
+	depends on COMMON_CLK
+	depends on HAVE_ARM_SMCCC
+	depends on OF
+	select DRM_GEM_CMA_HELPER
+	select DRM_KMS_HELPER
+	select DRM_MIPI_DSI
+	select DRM_PANEL
+	select MEMORY
+	select MTK_SMI
+	select MTK_DISPLAY_CMDQ
+	select VIDEOMODE_HELPERS
+	help
+	  Choose this option if you have a Mediatek SoCs.
+	  The module will be called mediatek-drm
+	  This driver provides kernel mode setting and
+	  buffer management to userspace.
+
+config MTK_DISPLAY_CMDQ
+        bool "CMDQ Support for Mediatek DRM driver"
+        help
+          Choose this option if you have a Mediatek SoCs.
+          The module will be called mediatek-drm
+          This driver provides kernel mode setting and
+          buffer management to userspace.
+
+config MTK_DISPLAY_COLOR
+        bool "COLOR Support for Mediatek DRM driver"
+        help
+          Choose this option if you have a Mediatek SoCs.
+          The module will be called mediatek-drm
+          This driver provides picture quality setting
+          Such as: brightness, contrast, saturation and so on.
+
+config MTK_DISPLAY_FULL_TUNING_COLOR
+        bool "FULL COLOR Support for Mediatek DRM driver"
+        help
+          Choose this option if you have a Mediatek SoCs.
+          The module will be called mediatek-drm
+          This driver provides full picture quality tuning
+          Such as: global brightness, contrast, saturation and single region hue.
+
+config MTK_DISPLAY_RVC
+	bool "RVC Support for Mediatek DRM driver"
+	help
+	  Choose this option if you want to activate fast RVC.
+	  RVC is rear camera for automotive application.
+	  This driver provides kernel mode setting and
+	  buffer management to userspace.
+
+config MTK_LCM_PHYSICAL_ROTATION_HW
+    bool "Rotate LCM display for 180 degree using HW"
+    help
+      Rotate LCM display for 180 degree using mediatek hardware engine
+      Enable it when LCM hardware is intalled upside down, and you need
+      to rotate the display content to adapting.
+      Select "y" if you want to enable LCM 180 rotate.
+      Select "n" if unsure.
+
+config DRM_MEDIATEK_HDMI
+	tristate "DRM HDMI Support for Mediatek SoCs"
+	depends on DRM_MEDIATEK
+	select SND_SOC_HDMI_CODEC if SND_SOC
+	select GENERIC_PHY
+	help
+	  DRM/KMS HDMI driver for Mediatek SoCs
+
+config MTK_DISPLAY_PQSERVICE
+	bool "Open root_only permission for drop drm master ioctl"
+	help
+	  Choose this option if build pqservice binary.
+	  Please configure pqservice to drop drm master
+	  to HWC.
+
+config DRM_DSI_SUPPORT
+	bool "Drm interface"
+	depends on OF
+	depends on BACKLIGHT_CLASS_DEVICE
+	help
+		Config y if device need to use DSI panel. Default value is n for DBI panel.

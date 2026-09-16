@@ -1,0 +1,363 @@
+source "drivers/misc/mediatek/Kconfig.default"
+
+config MTK_ENG_BUILD
+	bool "MTK Engineer Build"
+	help
+	  This is an option for developers. Say Y here for MTK engineering
+	  mode, which will have more debugging features built-in.
+	  Please set N for user mode to avoid performance impact.
+	  If unsure, say N here.
+
+menu "Storage"
+
+endmenu # Storage
+
+menu "Power, PMIC, Battery & Low Power"
+source "drivers/misc/mediatek/pmic/Kconfig"
+source "drivers/misc/mediatek/pwm/Kconfig"
+
+config MTK_CLK_BUFFER
+	tristate "MediaTek Clock Buffer Support"
+	select REGMAP
+	help
+	  Say yes here to add support for the MediaTek Clock Buffer
+	  driver, which support interface for  PMIC 26Mhz output to
+	  other HW component such as BB_MD/WCN/NFC/RF/UFS.
+	  It could also control FPM/LPM mode switch state.
+
+config MTK_CLKBUF_BBLPM
+	bool "MediaTek Clock Buffer BBLPM Mode Support"
+	select REGMAP
+	help
+	  Say yes here to add support for the MediaTek Clock Buffer
+	  BBLPM, which support PMIC 26Mhz output transfer to low
+	  power mode, less accurate with power consumption.
+	  But with restrict condition for some of  XO_BUFFER need to
+	  be disabled.
+
+config MTK_CLKBUF_NFC
+	bool "MediaTek Clock Buffer NFC Support"
+	select REGMAP
+        default n
+	help
+	  Say yes here to support for MediaTek Clock Buffer XO_NFC,
+	  which support PMIC 26Mhz output to NFC HW component. If
+	  this config is not set, XO_NFC will be disabled when
+	  driver is probed.
+
+config MTK_DCM_COMMON
+	tristate "Mediatek DCM COMMON"
+	depends on ARCH_MEDIATEK && OF
+	help
+	  For Mediatek dcm control. Provid a common interface to
+	  adjust dcm setting. Setting will not keep after reboot
+	  Select "y" if you want to use.
+	  Select "n" if you are not sure.
+
+config MTK_DCM_MT6779
+	tristate "Mediatek MT6779 DCM control"
+	depends on ARCH_MEDIATEK && OF
+	select MTK_DCM_COMMON
+	help
+	  For Mediatek MT6779 dcm HW control. Only enable when you
+	  neet to change mt6779 dcm setting. Setting will not keep after reboot
+	  Select "y" if you want to change mt6779 dcm setting.
+	  Select "n" if you do not need to change
+
+config MTK_DCM_MT6880
+	tristate "Mediatek MT6880 DCM control"
+	depends on ARCH_MEDIATEK && OF
+	select MTK_DCM_COMMON
+	help
+	  For Mediatek MT6880 dcm HW control. Only enable when you
+	  neet to change mt6880 dcm setting. Setting will not keep after reboot
+	  Select "y" if you want to change mt6880 dcm setting.
+	  Select "n" if you do not need to change
+
+config MTK_QOS_FRAMEWORK
+	tristate "MTK QOS FRAMEWORK"
+	depends on MTK_TINYSYS_SSPM_SUPPORT
+	help
+	  This kernel config can be used to enable MTK QOS FRAMEWORK.
+	  When enabling this option, BW Limiter and BW Bound Detector
+	  will be enabled and set EMI hardware.
+	  If unsure, say N.
+
+config MTK_SRCLKEN_RC
+	tristate "MediaTek SRCLKEN RC Support"
+	select REGMAP
+	help
+	  Say yes here to add support for the MediaTek SRCLKEN RC
+	  driver, which supports debug interface for monitoring XO 26M/
+	  DCXO/Vcore/LDO/Buck state with all subsys such as suspend/
+	  dpidle/MD/RF/BT/SCP...etc.
+	  It would also inform other subsystem/module to run suitable
+	  sw setting for srclken-rc driver.
+
+config MTK_LOW_POWER_MODULE
+	bool "Meditaek Low Power Module"
+	depends on ARCH_MEDIATEK && MTK_LPM
+	default n
+	help
+	  For MediaTek Low Power Module, such as CPU idle,
+	  CPU suspend low power enhencement.
+	  Select "y" if you want to enable low power features.
+	  Select "n" if unsure.
+
+config MTK_POWER_THROTTLING_COMMON
+	bool "MTK power throttling common"
+	help
+	  For MediaTek power throttling. Provide common interface for MTK
+	  power throttle.
+	  Select "y" if you want to enable power throttling feature
+	  Select "n" if unsure.
+
+config PMIC_LBAT_SERVICE
+	tristate "PMIC lbat service"
+	select MTK_POWER_THROTTLING_COMMON
+	help
+	  For MediaTek PMIC lbat service.
+	  It will detect if VBAT is higher or lower some threshold and trigger
+	  interrupt to notify.
+	  Select "y" if you want to enable PMIC lbat service.
+	  Select "n" if unsure.
+
+config MTK_BATTERY_OC_POWER_THROTTLING
+	tristate "MTK battery over current throttle"
+	select MTK_POWER_THROTTLING_COMMON
+	help
+	  For MediaTek battery over current power throttling.
+	  Power throttle when battery current loading higher than some
+	  threshold.
+	  Select "y" if you want to enable battery over current power
+	  throttling feature.
+	  Select "n" if unsure.
+
+config MTK_BATTERY_PERCENTAGE_POWER_THROTTLING
+	tristate "MTK battery percentage throttle"
+	select MTK_POWER_THROTTLING_COMMON
+	help
+	  For MediaTek battery percentage power throttling.
+	  Power throttle when battery percentage lower than some threshold
+	  Select "y" if you want to enable battery percentage power throttling
+	  feature
+	  Select "n" if unsure.
+
+config MTK_LOW_BATTERY_POWER_THROTTLING
+	tristate "MTK low battery throttle"
+	select MTK_POWER_THROTTLING_COMMON
+	select PMIC_LBAT_SERVICE
+	help
+	  For MediaTek low battery power throttling.
+	  Power throttle when battery voltage lower than some threshold.
+	  Select "y" if you want to enable low battery power throttling
+	  feature.
+	  Select "n" if unsure.
+
+config MTK_PTPOD
+	bool "MTK PTPOD"
+	help
+	  This kernel config can be used to enable PTPOD.
+	  When enable this option, voltage will be
+	  changed which will depended on chip.
+	  If unsure, say N.
+
+config MTK_STATIC_POWER
+	bool "MTK STATIC POWER"
+	help
+	  This kernel config can be used to enable static power.
+	  This information can provide power data to someone who
+	  need it
+	  If unsure, say N.
+
+config MTK_UNIFY_POWER
+	bool "MTK UNIFY POWER"
+	help
+	  This kernel config can be used to enable unified power table.
+	  This table can provide power data and capacity to someone who
+	  need it.
+	  If unsure, say Y.
+
+source "drivers/misc/mediatek/lpm/Kconfig"
+source "drivers/misc/mediatek/ppm_v3/Kconfig"
+endmenu # Power
+
+menu "MultiMedia, Display, Camera"
+
+config MTK_DISP_PLATFORM
+	string "MTK display platform name"
+	help
+	  To separate display features and control
+	  for different platform. Config platform name
+	  for your selection. It's used for display
+	  driver only.
+
+config MTK_SEC_VIDEO_PATH_SUPPORT
+	bool "Enable MTK Secure Video Path Support"
+	depends on MTK_IN_HOUSE_TEE_SUPPORT || TRUSTONIC_TEE_SUPPORT || \
+	           MTK_GOOGLE_TRUSTY_SUPPORT || MICROTRUST_TEE_SUPPORT
+	help
+	  This enable MTK Secure Video Path function of Widevine Level1,
+	  HW protect the online secure video streaming by ARM/Trustzone
+	  support TEE OS of: Trustonic, Microtrust, Blowfish .etc
+	  relative modules include: DRM, vdec, venc, cmdq, m4u, display,
+	  tplay/DXCC,ssvp, secmem, TEE frameworks, keyinstall, DAPC, MPU,
+	  ION, gralloc,RPMB, DXCC, mediacodec, WFD, MDP.etc
+	  relative options including: MTK_TEE_SUPPORT, MTK_GP_SUPPORT,
+	  MTK_DRM_L1_SUPPORT, MTK_PERSIST_PARTITION_SUPPORT,
+	  MTK_DRM_KEY_MNG_SUPPORT.
+
+config MTK_DRM_KEY_MNG_SUPPORT
+	bool "Enable MTK DRM Key Manager Support"
+	depends on MTK_IN_HOUSE_TEE_SUPPORT || TRUSTONIC_TEE_SUPPORT || \
+	           MTK_GOOGLE_TRUSTY_SUPPORT || MICROTRUST_TEE_SUPPORT
+	help
+	  This enable MTK DRM Key Manager Support.
+	  the DRM key install function is used in the feature of SVP .etc
+	  used by DRM/widevine to install and runtime read of keybox.
+	  relative options including: MTK_SEC_VIDEO_PATH_SUPPORT and
+	  MTK_PERSIST_PARTITION_SUPPORT.
+
+source "drivers/misc/mediatek/cmdq/Kconfig"
+source "drivers/misc/mediatek/mmp/Kconfig"
+source "drivers/misc/mediatek/lcm/Kconfig"
+source "drivers/misc/mediatek/sync/Kconfig"
+source "drivers/misc/mediatek/video/Kconfig"
+source "drivers/misc/mediatek/iommu/Kconfig"
+endmenu # MultiMedia
+
+menu "Sensors"
+source "drivers/misc/mediatek/sensor/Kconfig"
+endmenu # Sensors
+
+menu "Modem & Connectivity"
+source "drivers/misc/mediatek/ccci_util/Kconfig"
+source "drivers/misc/mediatek/ccmni/Kconfig"
+source "drivers/misc/mediatek/eccci/Kconfig"
+source "drivers/misc/mediatek/hsapif/Kconfig"
+source "drivers/misc/mediatek/btif/Kconfig"
+source "drivers/misc/mediatek/connectivity/Kconfig"
+source "drivers/misc/mediatek/conn_md/Kconfig"
+endmenu # CONN
+
+menu "Security"
+
+source "drivers/misc/mediatek/trusted_mem/Kconfig"
+source "drivers/misc/mediatek/geniezone/Kconfig"
+source "drivers/misc/mediatek/secure_dp/Kconfig"
+
+endmenu # Security
+
+menu "Other Peripherals"
+source "drivers/misc/mediatek/extcon/Kconfig"
+source "drivers/misc/mediatek/typec/Kconfig"
+source "drivers/misc/mediatek/mhccif/Kconfig"
+
+endmenu # Other Peripheral
+
+menu "Memory"
+
+endmenu # Memory
+
+menu "Performance, and Power"
+
+config MTK_PERFORMANCE_MODULE
+	bool "MediaTek Performance Module"
+	depends on ARCH_MEDIATEK
+	help
+	  For MediaTek Performance Module, such as Boost controller
+	  and FPSGO.
+	  Select "y" if you want to enable performance features.
+	  Select "n" if unsure.
+
+source "drivers/misc/mediatek/perf_common/Kconfig"
+source "drivers/misc/mediatek/performance/Kconfig"
+endmenu # PPT
+
+menu "TinySys"
+source "drivers/misc/mediatek/scp/Kconfig"
+source "drivers/misc/mediatek/sspm/Kconfig"
+source "drivers/misc/mediatek/mcupm/Kconfig"
+source "drivers/misc/mediatek/medmcu/Kconfig"
+endmenu # TinySys
+
+menu "Debug, log, trace"
+
+config MTK_ATF_LOGGER
+	tristate "atf logger kernel driver"
+	depends on HAVE_ARM_SMCCC && ARCH_MEDIATEK && OF
+	default n
+	help
+	  ARM Trusted Firmwear Logger which is designed by Mediatek.
+	  The logger provide a /proc interface for reading from
+	  user space.
+
+config MTK_AMMS
+	bool "Support Mediatek AP and Modem Sharing Memory techonology"
+	help
+	  Mediatek Memory sharing techonology
+	  It tries to free Modem memory once not
+	  used. Modem should support this as well
+	  or it won't work. If you are not sure
+	  Please select "N"
+
+config MTK_ICE_DEBUG
+	bool "ICE_DEBUG"
+	default y if ARCH_MEDIATEK
+	help
+	  For Mediatek InCircuit Emulator Debug features.
+	  Select "y" if you want to use.
+	  Select "n" if you are not sure.
+
+config MTK_SPMTWAM
+	tristate "Mediatek Signal profiling tool"
+	depends on ARCH_MEDIATEK && OF
+	help
+	  For Mediatek low power signal profiling features.
+	  Profiling several hw signals for debug purposes.
+	  Select "y" if you want to use.
+	  Select "n" if you are not sure.
+
+config MTK_MET
+	bool "Mediatek Embedded Technology"
+	depends on FTRACE && TRACING
+	help
+	  For Mediatek Embedded Technology features.
+	  It depends on FTRACE and TRACING.
+	  Select "Y" if you want to use.
+	  Select "N" if you are not sure.
+
+config MTK_GCOV_KERNEL
+	bool "Enable GCOV on Mediatek Modules"
+	depends on GCOV_KERNEL
+	help
+	  Enable GCOV on Mediatek Modules
+	  It depends on GCOV_KERNEL
+	  Select "Y" if you want to use.
+	  Select "N" if you are not sure.
+
+source "drivers/misc/mediatek/met_drv/Kconfig"
+source "drivers/misc/mediatek/mtprof/Kconfig"
+source "drivers/misc/mediatek/aee/Kconfig"
+source "drivers/misc/mediatek/cm_mgr/Kconfig"
+source "drivers/misc/mediatek/systracker/Kconfig"
+source "drivers/misc/mediatek/dbgtop/Kconfig"
+source "drivers/misc/mediatek/scdk/Kconfig"
+source "drivers/misc/mediatek/monitor_hang/Kconfig"
+source "drivers/misc/mediatek/debug_latch/Kconfig"
+source "drivers/misc/mediatek/cache/Kconfig"
+source "drivers/misc/mediatek/mtprintk/Kconfig"
+source "drivers/misc/mediatek/subpmic/Kconfig"
+source "drivers/misc/mediatek/cameraisp/Kconfig"
+source "drivers/misc/mediatek/log_store/Kconfig"
+source "drivers/misc/mediatek/leds/Kconfig"
+source "drivers/misc/mediatek/dvfsrc/Kconfig"
+endmenu # Debug
+
+menu "PCIe"
+source "drivers/misc/mediatek/pcie/Kconfig"
+endmenu # PCIe
+
+menu "Misc"
+
+endmenu # Misc
